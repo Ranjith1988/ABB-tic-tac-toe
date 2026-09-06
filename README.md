@@ -7,11 +7,6 @@ Tic Tac Toe is a browser game with two ways to play:
 
 The game keeps the board, rules, move history and scoreboard on the .NET API. The Angular app is the game interface.
 
-<img width="977" height="641" alt="image" src="https://github.com/user-attachments/assets/fe5115eb-bdcc-452b-90ed-c2b181990b6f" />
-
-<img width="882" height="617" alt="image" src="https://github.com/user-attachments/assets/b670a64f-213c-44bd-88a8-751384089ec3" />
-
-
 ## Play the Game
 
 ### Start a local game
@@ -177,6 +172,8 @@ Production frontend build:
 cd frontend
 npm run build
 ```
+
+The frontend CI test runs with coverage enforcement at **100% statements, branches, functions and lines**. Backend CI publishes a Coverlet coverage report alongside the 45 xUnit tests.
 
 ### Architecture notes
 

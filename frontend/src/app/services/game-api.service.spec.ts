@@ -35,6 +35,49 @@ describe('GameApiService', () => {
     request.flush({});
   });
 
+  it('gets a game by id', () => {
+    service.getGame('game-1').subscribe();
+
+    const request = httpMock.expectOne(request => request.url.endsWith('/api/games/game-1'));
+    expect(request.request.method).toBe('GET');
+    request.flush({});
+  });
+
+  it('undoes a game', () => {
+    service.undo('game-1').subscribe();
+
+    const request = httpMock.expectOne(request => request.url.endsWith('/api/games/game-1/undo'));
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({});
+    request.flush({});
+  });
+
+  it('resets a game', () => {
+    service.resetGame('game-1').subscribe();
+
+    const request = httpMock.expectOne(request => request.url.endsWith('/api/games/game-1/reset'));
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({});
+    request.flush({});
+  });
+
+  it('gets the scoreboard', () => {
+    service.getScoreboard().subscribe();
+
+    const request = httpMock.expectOne(request => request.url.endsWith('/api/scoreboard'));
+    expect(request.request.method).toBe('GET');
+    request.flush({ xWins: 1, oWins: 2, draws: 3 });
+  });
+
+  it('resets the scoreboard', () => {
+    service.resetScoreboard().subscribe();
+
+    const request = httpMock.expectOne(request => request.url.endsWith('/api/scoreboard/reset'));
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({});
+    request.flush(null);
+  });
+
   it('maps backend errors to a user-friendly error', () => {
     let errorMessage = '';
     service.getGame('missing').subscribe({ error: error => errorMessage = error.message });
@@ -42,5 +85,15 @@ describe('GameApiService', () => {
     const request = httpMock.expectOne(request => request.url.endsWith('/games/missing'));
     request.flush({ code: 'GAME_NOT_FOUND', message: 'Game was not found.' }, { status: 400, statusText: 'Bad Request' });
     expect(errorMessage).toBe('Game was not found.');
+  });
+
+  it('uses a fallback message when the backend error has no message', () => {
+    let errorMessage = '';
+    service.getGame('missing').subscribe({ error: error => errorMessage = error.message });
+
+    const request = httpMock.expectOne(request => request.url.endsWith('/games/missing'));
+    request.flush({}, { status: 500, statusText: 'Server Error' });
+
+    expect(errorMessage).toBe('Unable to complete the request. Please check that the API is running.');
   });
 });

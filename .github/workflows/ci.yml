@@ -13,7 +13,13 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - run: dotnet restore backend/TicTacToe.sln
-      - run: dotnet test backend/TicTacToe.sln --configuration Release --no-restore
+      - run: >-
+          dotnet test backend/tests/TicTacToe.Api.Tests/TicTacToe.Api.Tests.csproj
+          --configuration Release --no-restore
+          /p:CollectCoverage=true
+          /p:CoverletOutputFormat=cobertura
+          /p:Exclude="[TicTacToe.Api]TicTacToe.Api.Program"
+          /p:ExcludeByAttribute=CompilerGeneratedAttribute
 
   frontend:
     runs-on: ubuntu-latest
@@ -26,5 +32,5 @@ jobs:
         working-directory: frontend
       - run: npm run build
         working-directory: frontend
-      - run: npm test
+      - run: npm test -- --code-coverage
         working-directory: frontend
