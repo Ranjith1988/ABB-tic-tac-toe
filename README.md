@@ -1,207 +1,186 @@
-# Tic Tac Toe — Angular + .NET
+# Tic Tac Toe
 
-A production-quality local implementation of the supplied Tic Tac Toe exercise. The Angular frontend is a thin UI client; the .NET Web API is the source of truth for game state, validation, move history, game status, computer moves, and the session scoreboard.
+Tic Tac Toe is a browser game with two ways to play:
 
-<img width="902" height="641" alt="image" src="https://github.com/user-attachments/assets/ee118982-b06a-4bef-8407-26dbe40866b0" />
+- **Two Player**: take turns with another person on the same screen.
+- **Play Against Computer**: play as X while the computer plays as O.
 
+The game keeps the board, rules, move history and scoreboard on the .NET API. The Angular app is the game interface.
 
-## Requirements covered
+## Play the Game
 
-- 3×3 board, X/O turns and invalid-move validation
-- Row, column and diagonal win detection
-- Winning-cell highlighting and completed-game lock
-- Draw detection
-- Move history with move number, player and row/column
-- Two-player and computer modes
-- Deterministic computer priority: win → block → center → corner → first free cell
-- Mode-specific undo
-- Session scoreboard and independent scoreboard reset
-- REST API between Angular and .NET
-- Backend unit tests for game rules/state transitions
-- Frontend API/component tests
-- Swagger/OpenAPI and health endpoint
-- Centralized API error handling and strict TypeScript/C# compiler settings
+### Start a local game
 
-These capabilities map directly to the supplied problem statement. fileciteturn0file0L17-L45
+You need Node.js 20.19 or newer and the .NET 8 SDK.
 
-## Architecture
+Start the API in one terminal:
 
-```text
-Browser
-  |
-  | REST/JSON
-  v
-Angular 20 + TypeScript
-  |
-  | HTTP
-  v
-.NET 8 Web API
-  |
-  +-- GameService -------- Game rules / state transitions
-  +-- BasicComputerMoveStrategy
-  +-- InMemoryGameStore --- game sessions + scoreboard
-```
-
-The backend owns the state, as required by the clarification. fileciteturn0file0L186-L189
-
-## Technology stack
-
-- Frontend: Angular 20, TypeScript, RxJS, standalone components, SCSS
-- Backend: .NET 8 Web API, C#
-- API: REST/JSON
-- Storage: thread-safe in-memory store, explicitly permitted by the exercise
-- API documentation: Swagger/OpenAPI
-- Testing: xUnit + Angular/Jasmine/Karma
-
-## Run locally
-
-### Backend
-
-Prerequisite: .NET 8 SDK.
-
-```bash
+```powershell
 cd backend
 dotnet restore
 dotnet run --project src/TicTacToe.Api/TicTacToe.Api.csproj --launch-profile http
 ```
 
-API: `http://localhost:5000`
-Swagger: `http://localhost:5000/swagger`
-Health: `http://localhost:5000/health`
+Start the game in a second terminal:
 
-### Frontend
-
-Prerequisite: Node.js 20+ and npm.
-
-```bash
+```powershell
 cd frontend
 npm install
 npm start
 ```
 
-Open `http://localhost:4200`.
+Open [http://localhost:4200](http://localhost:4200) in your browser.
 
-The development API URL is configured in `frontend/src/environments/environment.ts`; production uses `/api`.
+If PowerShell blocks the `npm.ps1` script, use `npm.cmd start` or allow local scripts for your Windows user:
 
-## API contract
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+### Choose a game mode
+
+Use the **Game mode** menu at the top of the board:
+
+- **Two Player** starts a local two-person game.
+- **Play Against Computer** starts a game where you are X and the computer is O.
+
+Changing the mode starts a fresh game. The session scoreboard remains available.
+
+### Make a move
+
+Select any empty square on the 3x3 board. The active player is shown above the board.
+
+- X and O use different colors so the board is easy to scan.
+- In computer mode, the computer responds automatically after your move.
+- Completed games lock the board so no extra moves can be added.
+
+### Read the game status
+
+The status bar tells you whose turn it is, when the computer is thinking, and when the game has ended.
+
+- A player wins by completing a row, column or diagonal.
+- Winning squares are highlighted.
+- A full board with no winner is a draw.
+
+### Use the controls
+
+- **Reset Game** clears the current board and starts again with X. The scoreboard is preserved.
+- **Undo Last Move** removes the most recent move while the game is in progress.
+  - In Two Player mode, it removes one move.
+  - In Computer mode, it removes your move and the computer response together.
+- **Reset** beside Scoreboard clears X wins, O wins and draws without changing the current board.
+
+### Follow the move history
+
+The move log shows each move in order:
+
+| Move | Mark | Board position |
+|---|---|---|
+| #1 | X | Row 1, Column 1 |
+| #2 | O | Row 2, Column 2 |
+
+Rows and columns in the game display start at 1. The API uses zero-based row and column values.
+
+## Game Rules
+
+- X always starts.
+- Players alternate turns.
+- A move must target an empty square and the current player.
+- A completed game cannot accept more moves.
+- Undo is disabled after a win or draw so completed scoreboard results stay final.
+- The computer uses a predictable strategy: win when possible, block X, choose the center, choose a corner, then choose the first free square.
+
+## Troubleshooting
+
+### The game controls are disabled
+
+Make sure the API is running at [http://localhost:5000](http://localhost:5000). Check its health endpoint:
+
+```text
+http://localhost:5000/health
+```
+
+It should return:
+
+```json
+{"status":"Healthy"}
+```
+
+Then refresh the game page.
+
+### Port 4200 is already in use
+
+An Angular server may already be running. Open [http://localhost:4200](http://localhost:4200), or stop the existing process before starting another one.
+
+### Port 5000 is already in use
+
+Stop the existing API process or change the API port and update `frontend/src/environments/environment.ts` to match it.
+
+## Developer Guide
+
+### Project structure
+
+```text
+backend/
+  src/TicTacToe.Api/       .NET REST API and game rules
+  tests/                   Backend unit tests
+frontend/
+  src/app/                 Angular game UI and API client
+.github/workflows/         Continuous integration workflow
+```
+
+### Local service URLs
+
+| Service | URL |
+|---|---|
+| Game | [http://localhost:4200](http://localhost:4200) |
+| API | [http://localhost:5000](http://localhost:5000) |
+| Swagger | [http://localhost:5000/swagger](http://localhost:5000/swagger) |
+| Health | [http://localhost:5000/health](http://localhost:5000/health) |
+
+### API endpoints
 
 | Method | Endpoint | Purpose |
 |---|---|---|
-| POST | `/api/games` | Create game session |
-| GET | `/api/games/{id}` | Get current game |
-| POST | `/api/games/{id}/moves` | Submit player move; in computer mode this also performs the computer response atomically |
-| POST | `/api/games/{id}/undo` | Undo according to selected mode |
-| POST | `/api/games/{id}/reset` | Reset current game, preserving scoreboard |
-| GET | `/api/scoreboard` | Get session scoreboard |
-| POST | `/api/scoreboard/reset` | Reset scoreboard |
+| POST | `/api/games` | Create a game session |
+| GET | `/api/games/{id}` | Read current game state |
+| POST | `/api/games/{id}/moves` | Submit a move |
+| POST | `/api/games/{id}/undo` | Undo the current game |
+| POST | `/api/games/{id}/reset` | Reset the board and preserve the scoreboard |
+| GET | `/api/scoreboard` | Read the session scoreboard |
+| POST | `/api/scoreboard/reset` | Reset the session scoreboard |
 
-### Create game
+### Run tests
 
-```json
-POST /api/games
-{
-  "mode": "TwoPlayer"
-}
-```
+Backend tests:
 
-Valid modes: `TwoPlayer`, `Computer`.
-
-### Move
-
-```json
-POST /api/games/{id}/moves
-{
-  "player": "X",
-  "row": 0,
-  "column": 2
-}
-```
-
-Rows/columns are zero-based in the API and displayed as one-based positions in the UI.
-
-### Game state response
-
-The response contains game ID, board, current player, mode, status, winner, winning cells, move history and scoreboard, matching the requested response contract. fileciteturn0file0L142-L153
-
-## Undo design decision
-
-This implementation chooses **Option A: disable Undo after completion**. This keeps the final scoreboard immutable for a completed game and avoids retroactive score changes. The UI disables Undo for completed games and the API rejects it as `UNDO_NOT_ALLOWED`. This is explicitly permitted by the exercise. fileciteturn0file0L190-L198
-
-- Two-player: removes exactly one move.
-- Computer mode: removes the human X move and the immediately generated O move as one pair.
-- A fresh game starts with X.
-
-## Computer strategy
-
-The computer is O and the human is X. The strategy is deterministic and follows the required priority exactly: win if possible, otherwise block X, then center, then a corner, then the first available cell. fileciteturn0file0L111-L127
-
-The computer response is generated inside the same backend request as the human move, so the frontend never has to implement game rules or trust client-side computer logic.
-
-## Testing
-
-### Backend
-
-```bash
+```powershell
 cd backend
 dotnet test
 ```
 
-Tests cover valid/invalid moves, turn switching, row/column/diagonal wins, draw, reset, both undo modes, scoreboard updates, computer move selection, and moves after completion. These correspond to the testing expectations in the exercise. fileciteturn0file0L199-L217
+Frontend tests:
 
-### Frontend
-
-```bash
+```powershell
 cd frontend
 npm test
 ```
 
-Frontend tests cover REST request construction, API error mapping and basic board rendering.
+Production frontend build:
 
-## Engineering standards
+```powershell
+cd frontend
+npm run build
+```
 
-- Strict TypeScript and Angular template checking
-- Nullable reference types and warnings-as-errors in C#
-- Dependency injection and interface-driven backend services
-- Centralized exception-to-HTTP error mapping
-- No game-rule logic duplicated in the frontend
-- Per-game locking to make state transitions atomic under concurrent requests
-- Immutable response projections so clients cannot mutate server state
-- CORS restricted to the local Angular origin by default
-- Swagger/OpenAPI for API review
-- Health endpoint for operational smoke testing
-- Responsive, keyboard-accessible UI with visible focus states and ARIA labels
+### Architecture notes
 
-## AI-assisted development notes
+- Angular renders server responses and sends player intent; it does not duplicate game rules.
+- The API owns validation, turn changes, win detection, computer moves and scoreboard updates.
+- In-memory storage is used for this local exercise, so games and scores reset when the API process stops.
+- The computer strategy is deterministic and intentionally simple rather than minimax-based.
+- The UI uses responsive layout, keyboard focus states and accessible board labels.
 
-The exercise explicitly permits AI-assisted development and asks the candidate to explain prompts, generated code, manual changes, reviews, assumptions and trade-offs. fileciteturn0file0L218-L228
+## Production Considerations
 
-Suggested review narrative:
-
-1. Convert each functional requirement into a backend state transition and acceptance test.
-2. Keep the backend authoritative; the Angular app only renders API state and sends user intent.
-3. Isolate the computer strategy behind `IComputerMoveStrategy` so it can be unit tested independently.
-4. Choose Option A for post-completion undo to keep scoreboard semantics simple and auditable.
-5. Review concurrency, invalid inputs, completed-game behavior and score idempotency manually.
-
-## Assumptions and limitations
-
-- In-memory storage is used because the problem statement explicitly allows it. State is lost when the API process restarts. A production deployment with persistence would replace `InMemoryGameStore` with SQLite/EF Core or another durable store.
-- There is no authentication because the exercise is a local browser application and does not require user accounts.
-- Scoreboard is process/session scoped, not a global multi-instance leaderboard.
-- The requested basic computer strategy is deterministic rather than minimax/AI-optimal.
-- Undo after completion is disabled by design, per Option A.
-
-## Future improvements
-
-- SQLite/EF Core persistence
-- Distributed state/leaderboard for multi-instance deployments
-- Authentication and per-user game history
-- SignalR for multiplayer synchronization
-- Contract/integration tests using `WebApplicationFactory`
-- Structured logging/metrics and OpenTelemetry
-- CI quality gates for build, test, coverage and dependency scanning
-- Stronger computer opponent using minimax
-
-## Submission checklist
-
-The repository contains the Angular source, .NET source, tests, README, API contract and setup instructions requested by the exercise. fileciteturn0file0L243-L252
+Before deploying beyond a local demo, replace the in-memory store with durable storage, add authentication, configure a production API origin, add structured logging and metrics, and run integration tests against the deployed API.
