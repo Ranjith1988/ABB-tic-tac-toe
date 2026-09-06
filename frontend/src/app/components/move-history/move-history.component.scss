@@ -1,0 +1,9 @@
+.history { overflow: hidden; border: 1px solid #d9cdb5; border-radius: 11px; background: rgba(255,255,255,.42); }
+.row { display: grid; grid-template-columns: 54px 58px minmax(0, 1fr); align-items: center; gap: 10px; padding: 10px 12px; border-top: 1px solid #e6ddcc; color: #526359; font-size: .86rem; }
+.row.header { border-top: 0; color: #7b8579; background: rgba(255,255,255,.32); font-size: .68rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.move-number { color: #8b9588; font-variant-numeric: tabular-nums; }
+.player-mark { display: inline-grid; width: 26px; height: 26px; place-items: center; border-radius: 50%; font-size: .78rem; font-weight: 900; }
+.x-mark { color: #fffaf0; background: #d45e46; }
+.o-mark { color: #fffaf0; background: #2f7a58; }
+.position { min-width: 0; white-space: nowrap; }
+.empty { margin: 0; padding: 18px; color: #7b8579; text-align: center; }
