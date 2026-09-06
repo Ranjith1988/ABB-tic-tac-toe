@@ -7,6 +7,9 @@ Tic Tac Toe is a browser game with two ways to play:
 
 The game keeps the board, rules, move history and scoreboard on the .NET API. The Angular app is the game interface.
 
+<img width="977" height="641" alt="image" src="https://github.com/user-attachments/assets/fe5115eb-bdcc-452b-90ed-c2b181990b6f" />
+
+
 ## Play the Game
 
 ### Start a local game
