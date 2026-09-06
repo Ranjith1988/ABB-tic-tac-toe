@@ -2,6 +2,9 @@
 
 A production-quality local implementation of the supplied Tic Tac Toe exercise. The Angular frontend is a thin UI client; the .NET Web API is the source of truth for game state, validation, move history, game status, computer moves, and the session scoreboard.
 
+<img width="902" height="641" alt="image" src="https://github.com/user-attachments/assets/ee118982-b06a-4bef-8407-26dbe40866b0" />
+
+
 ## Requirements covered
 
 - 3×3 board, X/O turns and invalid-move validation
