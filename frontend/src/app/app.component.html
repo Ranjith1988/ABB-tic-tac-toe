@@ -1,0 +1,59 @@
+<main class="page-shell">
+  <section class="app-card" aria-labelledby="title">
+    <header class="app-header">
+      <div>
+        <h1 id="title">Tic Tac Toe</h1>
+      </div>
+      <label class="mode-control">
+        <span>Game mode</span>
+        <select [(ngModel)]="selectedMode" [disabled]="loading" (change)="startGame()">
+          <option value="TwoPlayer">Two Player</option>
+          <option value="Computer">Play Against Computer</option>
+        </select>
+      </label>
+    </header>
+
+    @if (errorMessage) {
+      <div class="error" role="alert">{{ errorMessage }}</div>
+    }
+
+    @if (game) {
+      <div class="status" [class.complete]="game.status !== 'InProgress'" role="status">
+        <span>{{ gameMessage }}</span>
+        @if (loading) { <span class="spinner" aria-label="Loading"></span> }
+      </div>
+
+      <div class="game-layout">
+        <section class="play-area" aria-label="Current game">
+          <ttt-game-board
+            [board]="game.board"
+            [winningCells]="game.winningCells"
+            [disabled]="loading || game.status !== 'InProgress'"
+            (cellSelected)="selectCell($event)">
+          </ttt-game-board>
+
+          <div class="actions">
+            <button type="button" class="primary" (click)="resetGame()" [disabled]="loading">Reset Game</button>
+            <button type="button" (click)="undo()" [disabled]="loading || !canUndo">Undo Last Move</button>
+          </div>
+        </section>
+
+        <aside class="side-panel">
+          <section>
+            <div class="section-heading">
+              <h2>Scoreboard</h2>
+              <button type="button" class="link-button" (click)="resetScoreboard()" [disabled]="loading">Reset</button>
+            </div>
+            <ttt-scoreboard [scoreboard]="game.scoreboard"></ttt-scoreboard>
+          </section>
+
+          <section>
+            <div class="section-heading"><h2>Move history</h2><span>{{ game.moveHistory.length }} moves</span></div>
+            <ttt-move-history [moves]="game.moveHistory"></ttt-move-history>
+          </section>
+        </aside>
+      </div>
+    }
+
+  </section>
+</main>

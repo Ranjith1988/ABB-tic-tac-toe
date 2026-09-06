@@ -1,0 +1,14 @@
+<div class="history" aria-label="Move history">
+  @if (moves.length === 0) {
+    <p class="empty">No moves yet.</p>
+  } @else {
+    <div class="row header"><span>Move</span><span>Mark</span><span>Board position</span></div>
+    @for (move of moves; track move.moveNumber) {
+      <div class="row">
+        <span class="move-number">#{{ move.moveNumber }}</span>
+        <span class="player-mark" [class.x-mark]="move.player === 'X'" [class.o-mark]="move.player === 'O'">{{ move.player }}</span>
+        <span class="position">Row {{ move.row + 1 }}, Column {{ move.column + 1 }}</span>
+      </div>
+    }
+  }
+</div>
