@@ -9,6 +9,8 @@ The game keeps the board, rules, move history and scoreboard on the .NET API. Th
 
 <img width="977" height="641" alt="image" src="https://github.com/user-attachments/assets/fe5115eb-bdcc-452b-90ed-c2b181990b6f" />
 
+<img width="882" height="617" alt="image" src="https://github.com/user-attachments/assets/b670a64f-213c-44bd-88a8-751384089ec3" />
+
 
 ## Play the Game
 
