@@ -1,0 +1,33 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(82px, 120px));
+  gap: 12px;
+  justify-content: center;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 20px;
+  background: #245641;
+  box-shadow: 0 12px 24px rgba(23, 59, 50, .2), inset 0 0 0 3px rgba(255,255,255,.08);
+}
+
+.cell {
+  aspect-ratio: 1;
+  border: 2px solid #d9cdb5;
+  border-radius: 12px;
+  background: #fffaf0;
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+
+.cell:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, .08);
+  border-color: #8b93a4;
+}
+
+.cell:disabled { cursor: default; }
+.x-cell { color: #d45e46; }
+.o-cell { color: #2f7a58; }
+.winner { background: #e4eed7; border-color: #8aaa70; box-shadow: inset 0 0 0 2px #b3c99b; }

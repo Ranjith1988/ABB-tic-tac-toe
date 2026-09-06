@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/.angular/
+**/node_modules/
+**/dist/
+**/coverage/
+.vscode/
+.idea/
+*.user
+*.suo
+.DS_Store

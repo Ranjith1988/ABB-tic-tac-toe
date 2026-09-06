@@ -1,0 +1,5 @@
+.scoreboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.scoreboard div { padding: 14px 8px; border: 1px solid #e2e5eb; border-radius: 12px; text-align: center; background: #fff; }
+.scoreboard strong, .scoreboard span { display: block; }
+.scoreboard strong { font-size: 1.5rem; }
+.scoreboard span { margin-top: 2px; color: #6b7280; font-size: .8rem; }
